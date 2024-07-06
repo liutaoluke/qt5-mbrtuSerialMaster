@@ -80,8 +80,8 @@ private slots:
             // qDebug() << "Response received:" << unit.values();
 
             // Store the result values in the external variable if provided
-            if (currentRequest.mp_mbDataUnitValues) {
-                *currentRequest.mp_mbDataUnitValues = reply->result().values();
+            if (currentRequest.mp_mbDataUnitReply) {
+                *currentRequest.mp_mbDataUnitReply = reply->result();
             }
         }
         else {
