@@ -12,13 +12,17 @@ CONFIG += c++17
 SOURCES += \
     main.cpp \
     mainwindow.cpp \
+    meter.cpp \
     modbushandler.cpp \
-    modbusrequest.cpp
+    modbusrequest.cpp \
+    os.cpp
 
 HEADERS += \
     mainwindow.h \
+    meter.h \
     modbushandler.h \
-    modbusrequest.h
+    modbusrequest.h \
+    os.h
 
 FORMS += \
     mainwindow.ui

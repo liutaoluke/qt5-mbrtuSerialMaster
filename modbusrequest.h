@@ -16,7 +16,7 @@ struct ModbusRequest {
     ModbusRequest() = default;
 
     // Parameterized constructor
-    ModbusRequest(const QModbusDataUnit &dataUnit, int serverAddress, QModbusDataUnit *valuesPtr = nullptr)
+    ModbusRequest(int serverAddress, const QModbusDataUnit &dataUnit, QModbusDataUnit *valuesPtr = nullptr)
         : dataUnit(dataUnit)
         , serverAddress(serverAddress)
         , mp_mbDataUnitReply(valuesPtr) {}

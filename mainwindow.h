@@ -1,6 +1,7 @@
 #pragma once
 
 #include <QMainWindow>
+#include "os.h"
 
 QT_BEGIN_NAMESPACE
 namespace Ui {
@@ -12,7 +13,7 @@ class MainWindow : public QMainWindow {
     Q_OBJECT
 
 public:
-    MainWindow(QWidget *parent = nullptr);
+    MainWindow(OS *p_os, QWidget *parent = nullptr);
     ~MainWindow();
 
 private:
