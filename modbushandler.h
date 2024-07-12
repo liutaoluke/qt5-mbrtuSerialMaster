@@ -98,7 +98,8 @@ private:
         if (!requestInProgress && !requestQueue.isEmpty()) {
             requestInProgress = true;
             currentRequest = requestQueue.dequeue();
-            QModbusReply *reply = modbusClient->sendReadRequest(currentRequest.dataUnit, currentRequest.serverAddress);
+            QModbusReply *reply = modbusClient->sendReadRequest(currentRequest.m_mbDataUnitRequest,
+                                                                currentRequest.m_serverAddress);
             if (reply) {
                 connect(reply, &QModbusReply::finished, this, &ModbusHandler::onReplyFinished);
             }

@@ -11,7 +11,7 @@ MainWindow::MainWindow(OS *p_os, QWidget *parent)
     , ui(new Ui::MainWindow) {
     ui->setupUi(this);
 
-    QTimer *p_timer = new QTimer;
+    QTimer *p_timer = new QTimer(this);
     p_timer->setInterval(500);
     p_timer->start();
 
