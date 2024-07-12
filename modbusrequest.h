@@ -3,7 +3,10 @@
 #include <QModbusDataUnit>
 #include <QVector>
 
+enum ModbusRequestType_enDT { MODBUS_REQUEST_READ, MODBUS_REQUEST_WRITE, MODBUS_REQUEST_RW };
+
 struct ModbusRequest {
+    ModbusRequestType_enDT m_mbRequestType;
     int m_serverAddress;
     QModbusDataUnit m_mbDataUnitRequest;
     QModbusDataUnit *mp_mbDataUnitReply; // Pointer to store the result
@@ -16,10 +19,12 @@ struct ModbusRequest {
     ModbusRequest() = default;
 
     // Parameterized constructor
-    ModbusRequest(int serverAddress,
+    ModbusRequest(ModbusRequestType_enDT mbRequestType,
+                  int serverAddress,
                   const QModbusDataUnit &dataUnitRequest,
                   QModbusDataUnit *p_dataUnitReply = nullptr)
-        : m_serverAddress(serverAddress)
+        : m_mbRequestType(mbRequestType)
+        , m_serverAddress(serverAddress)
         , m_mbDataUnitRequest(dataUnitRequest)
         , mp_mbDataUnitReply(p_dataUnitReply) {}
 #if 0
