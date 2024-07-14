@@ -1,104 +1,123 @@
 #include "mainwindow.h"
 #include "ui_mainwindow.h"
 
-#include <QDebug>
-#include <QLabel>
-#include <QString>
-#include <QTimer>
-
-MainWindow::MainWindow(QTimer *p_timer, OS *p_os, QWidget *parent)
+MainWindow::MainWindow(OS *p_os, QWidget *parent)
     : QMainWindow(parent)
+    , mp_os(p_os)
     , ui(new Ui::MainWindow) {
     ui->setupUi(this);
 
-    // connect(ui->pushButtonStart, &QPushButton::clicked, p_timer, &QTimer::start);
-    connect(ui->pushButtonStart, &QPushButton::clicked, p_timer, [p_timer]() {
-        p_timer->start();
-    });
-    connect(ui->pushButtonStop, &QPushButton::clicked, p_timer, &QTimer::stop);
+    // mp_mainWindowCom1 = new MainWindowCom1;
+    // connect(ui->pushButtonCom1, &QPushButton::clicked, [=]() {
+    //     this->hide();
+    //     mp_mainWindowCom1->show();
+    // });
+    connect(ui->pushButtonCom1, &QPushButton::clicked, this, &MainWindow::do_openMainWindowCom1);
 
-    connect(ui->pushButtonIncrease, &QPushButton::clicked, p_timer, [p_timer]() {
-        auto interval = p_timer->interval();
-        interval += 100;
-        if (interval >= 2000) {
-            interval = 2000;
-        }
-        p_timer->setInterval(interval);
-    });
+    // mp_mainWindowCom2 = new MainWindowCom2(&(p_os + 1)->m_interval.timer_01sec, (p_os + 1));
+    // connect(ui->pushButtonCom2, &QPushButton::clicked, [=]() {
+    //     this->hide();
+    //     mp_mainWindowCom2->show();
+    // });
+    connect(ui->pushButtonCom2, &QPushButton::clicked, this, &MainWindow::do_openMainWindowCom2);
 
-    connect(ui->pushButtonDecrease, &QPushButton::clicked, p_timer, [p_timer]() {
-        auto interval = p_timer->interval();
-        interval -= 100;
-        if (interval <= 500) {
-            interval = 500;
-        }
-        p_timer->setInterval(interval);
-    });
+    // mp_mainWindowCom3 = new MainWindowCom3(&(p_os + 2)->m_interval.timer_01sec, (p_os + 2), this);
+    // connect(ui->pushButtonCom3, &QPushButton::clicked, [=]() {
+    //     this->hide();
+    //     mp_mainWindowCom3->show();
+    // });
+    connect(ui->pushButtonCom3, &QPushButton::clicked, this, &MainWindow::do_openMainWindowCom3);
 
-    // QTimer::singleShot(3000, p_timer, [p_timer]() {
-    //     qDebug() << "Stopping p_timer...";
-    //     p_timer->stop();
+    // connect(mp_mainWindowCom1, &MainWindowCom1::sg_backToMainWindow, this, [=]() {
+    //     qDebug() << "!!!!!!MainWindow receive sg_backToMainWindow()!!!!!!";
+    //     if (mp_mainWindowCom1) {
+    //         qDebug() << " mp_mainWindowCom1 is not equal nullptr";
+    //     }
+    //     else {
+    //         qDebug() << " mp_mainWindowCom1 is equal nullptr!!!";
+    //     }
 
-    //     // 再次启动定时器，间隔为1000毫秒
-    //     QTimer::singleShot(2000, p_timer, [p_timer]() {
-    //         qDebug() << "Restarting p_timer...";
-    //         p_timer->start(1000);
-    //     });
+    //     mp_mainWindowCom1->hide();
+    //     // mp_mainWindowCom1->deleteLater();
+    //     this->show();
     // });
 
-    QTimer *p_timer_ui = new QTimer(this);
-    p_timer_ui->setInterval(500);
-    p_timer_ui->start();
+    // connect(mp_mainWindowCom2, &MainWindowCom2::sg_backToMainWindow, this, [=]() {
+    //     mp_mainWindowCom2->hide();
+    //     // mp_mainWindowCom2->deleteLater();
+    //     this->show();
+    // });
 
-    connect(p_timer_ui, &QTimer::timeout, this, [=]() {
-        ui->labelStatCntQTimer_500ms->setText(QString::number(p_os->stat.qtimer.cnt_500ms));
-        qDebug() << "p_os->stat.cntQTimer_500ms : " << p_os->stat.qtimer.cnt_500ms;
-
-        ui->labelStatCntQTimer_01sec->setText(QString::number(p_os->stat.qtimer.cnt_01sec));
-        qDebug() << "p_os->stat.cntQTimer_01sec : " << p_os->stat.qtimer.cnt_01sec;
-
-        ui->labelStatCntQTimer_05sec->setText(QString::number(p_os->stat.qtimer.cnt_05sec));
-        qDebug() << "p_os->stat.cntQTimer_05sec : " << p_os->stat.qtimer.cnt_05sec;
-
-        ui->labelStatCntQTimer_02min->setText(QString::number(p_os->stat.qtimer.cnt_02min));
-        qDebug() << "p_os->stat.cntQTimer_02min : " << p_os->stat.qtimer.cnt_02min;
-
-        ui->labelStatCntQTimer_10min->setText(QString::number(p_os->stat.qtimer.cnt_10min));
-        qDebug() << "p_os->stat.cntQTimer_10min : " << p_os->stat.qtimer.cnt_10min;
-
-        ui->labelStatMBHandlercntsendRequest->setText(
-            QString::number(p_os->stat.modbusHander.cnt_sendRequest));
-        ui->labelStatMBHandlercntprocessNextRequest->setText(
-            QString::number(p_os->stat.modbusHander.cnt_processNextRequest));
-        ui->labelStatMBHandlercntprocessNextRequestRead->setText(
-            QString::number(p_os->stat.modbusHander.cnt_processNextRequest_Read));
-        ui->labelStatMBHandlercntprocessNextRequestWrite->setText(
-            QString::number(p_os->stat.modbusHander.cnt_processNextRequest_Write));
-        ui->labelStatMBHandlercntprocessNextRequestRW->setText(
-            QString::number(p_os->stat.modbusHander.cnt_processNextRequest_RW));
-        ui->labelStatMBHandlercntprocessNextRequestNone->setText(
-            QString::number(p_os->stat.modbusHander.cnt_processNextRequest_NONE));
-        ui->labelStatMBHandlercntprocessNextRequestNull->setText(
-            QString::number(p_os->stat.modbusHander.cnt_processNextRequest_NULL));
-        ui->labelStatMBHandlercntprocessNextRequestFinished->setText(
-            QString::number(p_os->stat.modbusHander.cnt_processNextRequest_Finished));
-        ui->labelStatMBHandlercntprocessNextRequestError->setText(
-            QString::number(p_os->stat.modbusHander.cnt_processNextRequest_Error));
-        ui->labelStatMBHandlercntonErrorOccurred->setText(
-            QString::number(p_os->stat.modbusHander.cnt_onErrorOccurred));
-        ui->labelStatMBHandlercntonStateChanged_ConnectedState->setText(
-            QString::number(p_os->stat.modbusHander.cnt_onStateChanged_ConnectedState));
-        ui->labelStatMBHandlercntonStateChanged_UnconnectedState->setText(
-            QString::number(p_os->stat.modbusHander.cnt_onStateChanged_UnconnectedState));
-
-        auto percent_finished = p_os->stat.modbusHander.percent_Finished * 100;
-        ui->labelStatMBHandlerpercentFinished->setNum(static_cast<int>(percent_finished));
-        ui->labelStatMBHandlercntunFinished->setText(QString::number(p_os->stat.modbusHander.cnt_unFinished));
-
-        ui->labelTimerInterval->setNum(p_timer->interval());
-    });
+    // connect(mp_mainWindowCom3, &MainWindowCom3::sg_backToMainWindow, this, [=]() {
+    //     mp_mainWindowCom3->hide();
+    //     // mp_mainWindowCom3->deleteLater();
+    //     this->show();
+    // });
 }
 
 MainWindow::~MainWindow() {
     delete ui;
+}
+
+void MainWindow::do_openMainWindowCom1() {
+    qDebug() << "!!!!!!MainWindow::do_openMainWindowCom1()!!!!!!";
+    mp_mainWindowCom1 = new MainWindowCom1(this);
+    this->hide();
+    mp_mainWindowCom1->show();
+
+    auto connected_status = connect(mp_mainWindowCom1,
+                                    &MainWindowCom1::sg_backToMainWindow,
+                                    this,
+                                    &MainWindow::do_closeMainWindowCom1);
+    qDebug() << "do_closeMainWindowCom1 - Connection status:" << connected_status;
+}
+
+void MainWindow::do_closeMainWindowCom1() {
+    qDebug() << "!!!!!!start:MainWindow::do_closeMainWindowCom1()!!!!!!";
+    mp_mainWindowCom1->hide();
+    mp_mainWindowCom1->deleteLater();
+    this->show();
+    qDebug() << "!!!!!!end:MainWindow::do_closeMainWindowCom1()!!!!!!";
+}
+
+void MainWindow::do_openMainWindowCom2() {
+    qDebug() << "!!!!!!MainWindow::do_openMainWindowCom2()!!!!!!";
+    mp_mainWindowCom2 = new MainWindowCom2(&(mp_os + 1)->m_interval.timer_01sec, (mp_os + 1));
+    this->hide();
+    mp_mainWindowCom2->show();
+
+    auto connected_status = connect(mp_mainWindowCom2,
+                                    &MainWindowCom2::sg_backToMainWindow,
+                                    this,
+                                    &MainWindow::do_closeMainWindowCom2);
+    qDebug() << "do_closeMainWindowCom2 - Connection status:" << connected_status;
+}
+
+void MainWindow::do_closeMainWindowCom2() {
+    qDebug() << "!!!!!!start:MainWindow::do_closeMainWindowCom2()!!!!!!";
+    mp_mainWindowCom2->hide();
+    mp_mainWindowCom2->deleteLater();
+    this->show();
+    qDebug() << "!!!!!!end:MainWindow::do_closeMainWindowCom2()!!!!!!";
+}
+
+void MainWindow::do_openMainWindowCom3() {
+    qDebug() << "!!!!!!MainWindow::do_openMainWindowCom3()!!!!!!";
+    mp_mainWindowCom3 = new MainWindowCom3(&(mp_os + 2)->m_interval.timer_01sec, (mp_os + 2));
+    this->hide();
+    mp_mainWindowCom3->show();
+
+    auto connected_status = connect(mp_mainWindowCom3,
+                                    &MainWindowCom3::sg_backToMainWindow,
+                                    this,
+                                    &MainWindow::do_closeMainWindowCom3);
+    qDebug() << "do_closeMainWindowCom3 - Connection status:" << connected_status;
+}
+
+void MainWindow::do_closeMainWindowCom3() {
+    qDebug() << "!!!!!!start:MainWindow::do_closeMainWindowCom3()!!!!!!";
+    mp_mainWindowCom3->hide();
+    mp_mainWindowCom3->deleteLater();
+    this->show();
+    qDebug() << "!!!!!!end:MainWindow::do_closeMainWindowCom3()!!!!!!";
 }
