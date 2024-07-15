@@ -19,7 +19,9 @@ SOURCES += \
     meter.cpp \
     modbushandler.cpp \
     modbusrequest.cpp \
-    os.cpp
+    os.cpp \
+    serialcommu.cpp \
+    serialrequest.cpp
 
 HEADERS += \
     ess.h \
@@ -30,7 +32,9 @@ HEADERS += \
     meter.h \
     modbushandler.h \
     modbusrequest.h \
-    os.h
+    os.h \
+    serialcommu.h \
+    serialrequest.h
 
 FORMS += \
     mainwindow.ui \
