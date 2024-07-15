@@ -8,14 +8,16 @@
 #include <QTimer>
 
 #include "modbusrequest.h"
+#include "os.h"
 
 class ModbusHandler : public QObject {
     Q_OBJECT
 
 public:
-    explicit ModbusHandler(const QString &portName, QObject *parent = nullptr)
+    explicit ModbusHandler(OS *p_os, const QString &portName, QObject *parent = nullptr)
         : QObject(parent)
-        , requestInProgress(false) {
+        , requestInProgress(false)
+        , mp_os(p_os) {
         modbusClient = new QModbusRtuSerialMaster(this);
 
         connect(modbusClient, &QModbusClient::stateChanged, this, &ModbusHandler::onStateChanged);
@@ -45,6 +47,9 @@ public:
     //     }
     // }
     void sendRequest(ModbusRequest &request) {
+        ++mp_os->stat.modbusHander.cnt_sendRequest;
+        mp_os->stat.modbusHander.calc_cnt_unFinished();
+
         requestQueue.enqueue(request);
         if (!requestInProgress) {
             emit nextRequest();
@@ -57,14 +62,20 @@ signals:
 private slots:
     void onStateChanged(QModbusDevice::State state) {
         if (state == QModbusDevice::ConnectedState) {
+            ++mp_os->stat.modbusHander.cnt_onStateChanged_ConnectedState;
+
             qDebug() << "Modbus device connected";
         }
         else if (state == QModbusDevice::UnconnectedState) {
+            ++mp_os->stat.modbusHander.cnt_onStateChanged_UnconnectedState;
+
             qWarning() << "Modbus device disconnected";
         }
     }
 
     void onErrorOccurred(QModbusDevice::Error error) {
+        ++mp_os->stat.modbusHander.cnt_onErrorOccurred;
+
         qWarning() << "Modbus error occurred:" << error;
         requestInProgress = false; // Reset the flag in case of error
         emit nextRequest();        // Try to process the next request
@@ -76,6 +87,9 @@ private slots:
             return;
 
         if (reply->error() == QModbusDevice::NoError) {
+            ++mp_os->stat.modbusHander.cnt_processNextRequest_Finished;
+            mp_os->stat.modbusHander.calc_percent_Finished();
+
             // const QModbusDataUnit unit = reply->result();
             // qDebug() << "Response received:" << unit.values();
 
@@ -85,6 +99,8 @@ private slots:
             }
         }
         else {
+            ++mp_os->stat.modbusHander.cnt_processNextRequest_Error;
+
             qWarning() << "Modbus error occurred:" << reply->error();
         }
 
@@ -96,14 +112,39 @@ private slots:
 private:
     void processNextRequest() {
         if (!requestInProgress && !requestQueue.isEmpty()) {
+            ++mp_os->stat.modbusHander.cnt_processNextRequest;
+
             requestInProgress = true;
             currentRequest = requestQueue.dequeue();
-            QModbusReply *reply = modbusClient->sendReadRequest(currentRequest.m_mbDataUnitRequest,
-                                                                currentRequest.m_serverAddress);
+
+            QModbusReply *reply;
+            switch (currentRequest.m_mbRequestType) {
+            case MODBUS_REQUEST_READ:
+                ++mp_os->stat.modbusHander.cnt_processNextRequest_Read;
+                reply = modbusClient->sendReadRequest(currentRequest.m_mbDataUnitRequest,
+                                                      currentRequest.m_serverAddress);
+                break;
+            case MODBUS_REQUEST_WRITE:
+                ++mp_os->stat.modbusHander.cnt_processNextRequest_Write;
+                reply = modbusClient->sendWriteRequest(currentRequest.m_mbDataUnitRequest,
+                                                       currentRequest.m_serverAddress);
+                break;
+            case MODBUS_REQUEST_RW:
+                ++mp_os->stat.modbusHander.cnt_processNextRequest_RW;
+                reply = nullptr;
+                break;
+            default:
+                ++mp_os->stat.modbusHander.cnt_processNextRequest_NONE;
+                reply = nullptr;
+                break;
+            }
+
             if (reply) {
                 connect(reply, &QModbusReply::finished, this, &ModbusHandler::onReplyFinished);
             }
             else {
+                ++mp_os->stat.modbusHander.cnt_processNextRequest_NULL;
+
                 qWarning() << "Failed to send request";
                 requestInProgress = false;
                 emit nextRequest();
@@ -115,4 +156,7 @@ private:
     QQueue<ModbusRequest> requestQueue;
     ModbusRequest currentRequest;
     bool requestInProgress;
+
+    //依赖注入
+    OS *mp_os;
 };

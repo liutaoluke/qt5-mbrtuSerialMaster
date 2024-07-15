@@ -9,10 +9,19 @@ Meter::Meter(int device_address, QObject *parent)
     , m_mbDataUnitRequestGetParaSys(QModbusDataUnit::HoldingRegisters, 0x0000, 53)
     , m_mbDataUnitRequestGetParaTOUA(QModbusDataUnit::HoldingRegisters, 0x6000, 56)
 
-    , m_mbRequestGetDataVAW(m_deviceAddress, m_mbDataUnitRequestGetDataVAW, &m_mbDataUnitReplyGetDataVAW)
-    , m_mbRequestGetDataEnergy(m_deviceAddress,
+    , m_mbRequestGetDataVAW(MODBUS_REQUEST_READ,
+                            m_deviceAddress,
+                            m_mbDataUnitRequestGetDataVAW,
+                            &m_mbDataUnitReplyGetDataVAW)
+    , m_mbRequestGetDataEnergy(MODBUS_REQUEST_READ,
+                               m_deviceAddress,
                                m_mbDataUnitRequestGetDataEnergy,
                                &m_mbDataUnitReplyGetDataEnergy)
-    , m_mbRequestGetParaSys(m_deviceAddress, m_mbDataUnitRequestGetParaSys, &m_mbDataUnitReplyGetParaSys)
-    , m_mbRequestGetParaTOUA(m_deviceAddress, m_mbDataUnitRequestGetParaTOUA, &m_mbDataUnitReplyGetParaTouA) {
-}
+    , m_mbRequestGetParaSys(MODBUS_REQUEST_READ,
+                            m_deviceAddress,
+                            m_mbDataUnitRequestGetParaSys,
+                            &m_mbDataUnitReplyGetParaSys)
+    , m_mbRequestGetParaTOUA(MODBUS_REQUEST_READ,
+                             m_deviceAddress,
+                             m_mbDataUnitRequestGetParaTOUA,
+                             &m_mbDataUnitReplyGetParaTouA) {}

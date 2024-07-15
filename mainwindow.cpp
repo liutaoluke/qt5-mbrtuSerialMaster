@@ -6,30 +6,96 @@
 #include <QString>
 #include <QTimer>
 
-MainWindow::MainWindow(OS *p_os, QWidget *parent)
+MainWindow::MainWindow(QTimer *p_timer, OS *p_os, QWidget *parent)
     : QMainWindow(parent)
     , ui(new Ui::MainWindow) {
     ui->setupUi(this);
 
-    QTimer *p_timer = new QTimer(this);
-    p_timer->setInterval(500);
-    p_timer->start();
+    // connect(ui->pushButtonStart, &QPushButton::clicked, p_timer, &QTimer::start);
+    connect(ui->pushButtonStart, &QPushButton::clicked, p_timer, [p_timer]() {
+        p_timer->start();
+    });
+    connect(ui->pushButtonStop, &QPushButton::clicked, p_timer, &QTimer::stop);
 
-    connect(p_timer, &QTimer::timeout, this, [=]() {
-        ui->labelStatCntQTimer_500ms->setText(QString::number(p_os->stat.cntQTimer_500ms));
-        qDebug() << "p_os->stat.cntQTimer_500ms : " << p_os->stat.cntQTimer_500ms;
+    connect(ui->pushButtonIncrease, &QPushButton::clicked, p_timer, [p_timer]() {
+        auto interval = p_timer->interval();
+        interval += 100;
+        if (interval >= 2000) {
+            interval = 2000;
+        }
+        p_timer->setInterval(interval);
+    });
 
-        ui->labelStatCntQTimer_01sec->setText(QString::number(p_os->stat.cntQTimer_01sec));
-        qDebug() << "p_os->stat.cntQTimer_01sec : " << p_os->stat.cntQTimer_01sec;
+    connect(ui->pushButtonDecrease, &QPushButton::clicked, p_timer, [p_timer]() {
+        auto interval = p_timer->interval();
+        interval -= 100;
+        if (interval <= 500) {
+            interval = 500;
+        }
+        p_timer->setInterval(interval);
+    });
 
-        ui->labelStatCntQTimer_05sec->setText(QString::number(p_os->stat.cntQTimer_05sec));
-        qDebug() << "p_os->stat.cntQTimer_05sec : " << p_os->stat.cntQTimer_05sec;
+    // QTimer::singleShot(3000, p_timer, [p_timer]() {
+    //     qDebug() << "Stopping p_timer...";
+    //     p_timer->stop();
 
-        ui->labelStatCntQTimer_02min->setText(QString::number(p_os->stat.cntQTimer_02min));
-        qDebug() << "p_os->stat.cntQTimer_02min : " << p_os->stat.cntQTimer_02min;
+    //     // 再次启动定时器，间隔为1000毫秒
+    //     QTimer::singleShot(2000, p_timer, [p_timer]() {
+    //         qDebug() << "Restarting p_timer...";
+    //         p_timer->start(1000);
+    //     });
+    // });
 
-        ui->labelStatCntQTimer_10min->setText(QString::number(p_os->stat.cntQTimer_10min));
-        qDebug() << "p_os->stat.cntQTimer_10min : " << p_os->stat.cntQTimer_10min;
+    QTimer *p_timer_ui = new QTimer(this);
+    p_timer_ui->setInterval(500);
+    p_timer_ui->start();
+
+    connect(p_timer_ui, &QTimer::timeout, this, [=]() {
+        ui->labelStatCntQTimer_500ms->setText(QString::number(p_os->stat.qtimer.cnt_500ms));
+        qDebug() << "p_os->stat.cntQTimer_500ms : " << p_os->stat.qtimer.cnt_500ms;
+
+        ui->labelStatCntQTimer_01sec->setText(QString::number(p_os->stat.qtimer.cnt_01sec));
+        qDebug() << "p_os->stat.cntQTimer_01sec : " << p_os->stat.qtimer.cnt_01sec;
+
+        ui->labelStatCntQTimer_05sec->setText(QString::number(p_os->stat.qtimer.cnt_05sec));
+        qDebug() << "p_os->stat.cntQTimer_05sec : " << p_os->stat.qtimer.cnt_05sec;
+
+        ui->labelStatCntQTimer_02min->setText(QString::number(p_os->stat.qtimer.cnt_02min));
+        qDebug() << "p_os->stat.cntQTimer_02min : " << p_os->stat.qtimer.cnt_02min;
+
+        ui->labelStatCntQTimer_10min->setText(QString::number(p_os->stat.qtimer.cnt_10min));
+        qDebug() << "p_os->stat.cntQTimer_10min : " << p_os->stat.qtimer.cnt_10min;
+
+        ui->labelStatMBHandlercntsendRequest->setText(
+            QString::number(p_os->stat.modbusHander.cnt_sendRequest));
+        ui->labelStatMBHandlercntprocessNextRequest->setText(
+            QString::number(p_os->stat.modbusHander.cnt_processNextRequest));
+        ui->labelStatMBHandlercntprocessNextRequestRead->setText(
+            QString::number(p_os->stat.modbusHander.cnt_processNextRequest_Read));
+        ui->labelStatMBHandlercntprocessNextRequestWrite->setText(
+            QString::number(p_os->stat.modbusHander.cnt_processNextRequest_Write));
+        ui->labelStatMBHandlercntprocessNextRequestRW->setText(
+            QString::number(p_os->stat.modbusHander.cnt_processNextRequest_RW));
+        ui->labelStatMBHandlercntprocessNextRequestNone->setText(
+            QString::number(p_os->stat.modbusHander.cnt_processNextRequest_NONE));
+        ui->labelStatMBHandlercntprocessNextRequestNull->setText(
+            QString::number(p_os->stat.modbusHander.cnt_processNextRequest_NULL));
+        ui->labelStatMBHandlercntprocessNextRequestFinished->setText(
+            QString::number(p_os->stat.modbusHander.cnt_processNextRequest_Finished));
+        ui->labelStatMBHandlercntprocessNextRequestError->setText(
+            QString::number(p_os->stat.modbusHander.cnt_processNextRequest_Error));
+        ui->labelStatMBHandlercntonErrorOccurred->setText(
+            QString::number(p_os->stat.modbusHander.cnt_onErrorOccurred));
+        ui->labelStatMBHandlercntonStateChanged_ConnectedState->setText(
+            QString::number(p_os->stat.modbusHander.cnt_onStateChanged_ConnectedState));
+        ui->labelStatMBHandlercntonStateChanged_UnconnectedState->setText(
+            QString::number(p_os->stat.modbusHander.cnt_onStateChanged_UnconnectedState));
+
+        auto percent_finished = p_os->stat.modbusHander.percent_Finished * 100;
+        ui->labelStatMBHandlerpercentFinished->setNum(static_cast<int>(percent_finished));
+        ui->labelStatMBHandlercntunFinished->setText(QString::number(p_os->stat.modbusHander.cnt_unFinished));
+
+        ui->labelTimerInterval->setNum(p_timer->interval());
     });
 }
 
