@@ -1,7 +1,34 @@
 #pragma once
 
 #include <QObject>
+#include <QTimer>
 
+//QTimerInterval
+enum OS_QTimerInterval_enDT {
+    OS_QTIMER_INTERVAL_UPDATE = 1000,
+    OS_QTIMER_INTERVAL_01SEC = 500,
+    OS_QTIMER_INTERVAL_05SEC = 1000,
+    OS_QTIMER_INTERVAL_30SEC = 30000,
+    OS_QTIMER_INTERVAL_02MIN = 12000,
+    OS_QTIMER_INTERVAL_10MIN = 60000,
+};
+struct QTimerInterval_stDT {
+    QTimer timer_01sec;
+    QTimer timer_05sec;
+    QTimer timer_30sec;
+    QTimer timer_02min;
+    QTimer timer_10min;
+    // QTimer timer_1hour;
+    // QTimer timer_6hour;
+    // QTimer timer_01day;
+    // QTimer timer_1week;
+    // QTimer timer_01mon;
+};
+//Statistics_stDT
+enum OS_Statistics_ModbusHander_enDT {
+    OS_STAT_MBH_CNT_UNFINISHED_MIN = 10,
+    OS_STAT_MBH_CNT_UNFINISHED_MAX = 100
+};
 struct Statistics_ModbusHander_stDT {
     quint64 cnt_sendRequest = 0;
     quint64 cnt_processNextRequest = 0;
@@ -24,8 +51,6 @@ struct Statistics_ModbusHander_stDT {
             percent_Finished = static_cast<double>(cnt_processNextRequest_Finished) / cnt_sendRequest;
         }
     }
-
-    void calc_cnt_unFinished() { cnt_unFinished = cnt_sendRequest - cnt_processNextRequest_Finished; }
 };
 
 struct Statistics_QTimer_stDT {
@@ -50,5 +75,6 @@ public:
 signals:
 
 public:
-    Statistics_stDT stat;
+    Statistics_stDT m_stat;
+    QTimerInterval_stDT m_interval;
 };
