@@ -4,23 +4,25 @@
 
 LogHandler::LogHandler() {
     logWriter = new LogWriter("application.log");
-    logThread = new QThread();
-    logWriter->moveToThread(logThread);
+    // logThread = new QThread();
+    // logWriter->moveToThread(logThread);
     // connect(logThread, &QThread::started, logWriter, &LogWriter::do_startFlushTimer);
     // connect(logThread, &QThread::finished, logWriter, &LogWriter::do_stopFlushTimer);
-    connect(logThread, &QThread::finished, logWriter, &QObject::deleteLater);
+    // connect(logThread, &QThread::finished, logWriter, &QObject::deleteLater);
     connect(this, &LogHandler::sg_logMessage, logWriter, &LogWriter::writeLog);
     connect(this, &LogHandler::sg_flushLogs, logWriter, &LogWriter::flushLogs);
-    logThread->start();
+    // logThread->start();
 }
 
 LogHandler::~LogHandler() {
-    qCritical() << "destruction - LogHandler::~LogHandler()!!!";
+    qCritical() << "destructor - LogHandler::~LogHandler()!!!";
 
-    logWriter->do_stopFlushTimer();
-    logThread->quit(); // 请求线程退出事件循环
-    logThread->wait(); // 等待线程完成所有任务并退出
-    delete logThread;  // 删除线程对象
+    // logWriter->do_stopFlushTimer();
+    // logThread->quit(); // 请求线程退出事件循环
+    // logThread->wait(); // 等待线程完成所有任务并退出
+    // delete logThread;  // 删除线程对象
+    // logWriter->deleteLater();
+    delete logWriter;
 }
 
 void LogHandler::handleLogMessage(QtMsgType type, const QMessageLogContext &context, const QString &msg) {
@@ -39,13 +41,13 @@ void LogHandler::handleLogMessage(QtMsgType type, const QMessageLogContext &cont
         break;
     case QtWarningMsg:
         logMessage = QString("Warning: %1").arg(msg);
-        qDebug().noquote() << logMessage;
-        return;
+        // qWarning().noquote() << logMessage;
+        // return;
         break;
     case QtCriticalMsg:
         logMessage = QString("Critical: %1").arg(msg);
-        qDebug().noquote() << logMessage;
-        return;
+        // qCritical().noquote() << logMessage;
+        // return;
         break;
     case QtFatalMsg:
         logMessage = QString("Fatal: %1").arg(msg);

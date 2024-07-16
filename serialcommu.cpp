@@ -5,10 +5,6 @@
 SerialCommu::SerialCommu(QObject *parent)
     : QObject{parent}
     , m_requestInProgress(false) {
-    //moveToThread - p_threadSerial
-    // QThread *p_threadSerial = new QThread;
-    // this->moveToThread(p_threadSerial);
-    // p_threadSerial->start();
 
     mp_serialPort = new QSerialPort(this);
 

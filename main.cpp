@@ -28,14 +28,6 @@ int main(int argc, char *argv[]) {
     OS os[3];
     ESS ess(os);
 
-    // QThread *p_threadESS = new QThread;
-    // ess.moveToThread(p_threadESS);
-    // p_threadESS->start();
-
-    // ess.controlOSQTimerInterval(os);
-    // ess.controlOSQTimerInterval(os + 1);
-    // ess.controlOSQTimerInterval(os + 2);
-
     MainWindow w(os);
     w.show();
 
@@ -70,6 +62,7 @@ int main(int argc, char *argv[]) {
     // When application quits, stop the thread
     QObject::connect(&a, &QCoreApplication::aboutToQuit, [&]() {
         globalLogHandler->deleteLater();
+        // delete globalLogHandler;
     });
 
     return a.exec();
