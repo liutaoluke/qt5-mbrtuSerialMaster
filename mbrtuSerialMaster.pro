@@ -26,6 +26,7 @@ SOURCES += \
     serialrequest.cpp
 
 HEADERS += \
+    def.h \
     ess.h \
     loghandler.h \
     logwriter.h \

@@ -1,4 +1,5 @@
 #pragma once
+#include "def.h"
 
 #include <QFile>
 #include <QMutex>
@@ -14,6 +15,8 @@ public:
     ~LogWriter();
 
 public slots:
+    void do_startFlushTimer();
+    void do_stopFlushTimer();
     void writeLog(const QString &message);
     void flushLogs();
 

@@ -1,9 +1,11 @@
 #pragma once
+#include "def.h"
 
 #include <QDebug>
 #include <QObject>
 #include <QQueue>
 #include <QSerialPort>
+#include <QThread>
 #include <QTimer>
 
 #include "serialrequest.h"
@@ -25,6 +27,7 @@ signals:
 
 private slots:
     void do_handleBytesWritten(quint64 bytes) {
+        qDebug() << "SerialCommu::do_handleBytesWritten - ThreadId: " << QThread::currentThreadId();
         if (bytes == static_cast<quint64>(m_currentRequest.m_dataRequest.size())) {
             qDebug() << "Data sent successfully!";
 
@@ -58,6 +61,8 @@ private slots:
         m_currentRequest.m_dataReply.append(replyData);
     }
     void do_handleTimerByteIntervalTimeOut() {
+        qDebug() << "SerialCommu::do_handleTimerByteIntervalTimeOut - ThreadId: "
+                 << QThread::currentThreadId();
         //字节间隔定时超时，则判断为数据帧接收完毕，可以进行数据帧的相关的处理
         m_timerByteInterval.stop();
 
