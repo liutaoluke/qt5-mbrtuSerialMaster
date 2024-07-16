@@ -1,11 +1,17 @@
 #include "mainwindow.h"
 #include "ui_mainwindow.h"
 
+#include <QCoreApplication>
+
 MainWindow::MainWindow(OS *p_os, QWidget *parent)
     : QMainWindow(parent)
     , mp_os(p_os)
     , ui(new Ui::MainWindow) {
     ui->setupUi(this);
+
+    connect(ui->pushButtonQuit, &QPushButton::clicked, [=]() {
+        QCoreApplication::quit();
+    });
 
     // mp_mainWindowCom1 = new MainWindowCom1;
     // connect(ui->pushButtonCom1, &QPushButton::clicked, [=]() {
