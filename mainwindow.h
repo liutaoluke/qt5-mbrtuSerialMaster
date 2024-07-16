@@ -1,6 +1,8 @@
 #pragma once
+#include "def.h"
 
 #include <QMainWindow>
+
 #include "mainwindowcom1.h"
 #include "mainwindowcom2.h"
 #include "mainwindowcom3.h"

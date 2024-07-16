@@ -11,6 +11,8 @@ CONFIG += c++17
 
 SOURCES += \
     ess.cpp \
+    loghandler.cpp \
+    logwriter.cpp \
     main.cpp \
     mainwindow.cpp \
     mainwindowcom1.cpp \
@@ -19,10 +21,15 @@ SOURCES += \
     meter.cpp \
     modbushandler.cpp \
     modbusrequest.cpp \
-    os.cpp
+    os.cpp \
+    serialcommu.cpp \
+    serialrequest.cpp
 
 HEADERS += \
+    def.h \
     ess.h \
+    loghandler.h \
+    logwriter.h \
     mainwindow.h \
     mainwindowcom1.h \
     mainwindowcom2.h \
@@ -30,7 +37,9 @@ HEADERS += \
     meter.h \
     modbushandler.h \
     modbusrequest.h \
-    os.h
+    os.h \
+    serialcommu.h \
+    serialrequest.h
 
 FORMS += \
     mainwindow.ui \

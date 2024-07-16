@@ -6,13 +6,13 @@ ESS::ESS(OS *p_os, QObject *parent)
     mp_osCom2 = p_os + 1;
     mp_osCom3 = p_os + 2;
 
-    mp_mbHandlerCom1 = new ModbusHandler(mp_osCom1, "/dev/ttyS1");
+    mp_mbHandlerCom1 = new ModbusHandler(mp_osCom1, "ttyS1");
     mp_mbHandlerCom1->start();
 
-    mp_mbHandlerCom2 = new ModbusHandler(mp_osCom2, "/dev/ttyS2");
+    mp_mbHandlerCom2 = new ModbusHandler(mp_osCom2, "ttyS2");
     mp_mbHandlerCom2->start();
 
-    mp_mbHandlerCom3 = new ModbusHandler(mp_osCom3, "/dev/ttyS4");
+    mp_mbHandlerCom3 = new ModbusHandler(mp_osCom3, "ttyS8");
     mp_mbHandlerCom3->start();
 
     mp_meterGrid = new Meter(21, this);

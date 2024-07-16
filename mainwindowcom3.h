@@ -1,4 +1,5 @@
 #pragma once
+#include "def.h"
 
 #include <QMainWindow>
 #include "os.h"

@@ -1,4 +1,5 @@
 #pragma once
+#include "def.h"
 
 #include <QModbusDataUnit>
 #include <QVector>

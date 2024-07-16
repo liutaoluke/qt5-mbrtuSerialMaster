@@ -1,4 +1,5 @@
 #pragma once
+#include "def.h"
 
 #include <QDebug>
 #include <QModbusRtuSerialMaster>
@@ -36,7 +37,10 @@ public:
 
     void start() {
         if (!modbusClient->connectDevice()) {
-            qWarning() << "Failed to connect to Modbus device";
+            qWarning() << "Failed to connect to Modbus device!!!";
+        }
+        else {
+            qDebug() << " connect to Modbus device sucessfully!!!";
         }
     }
 
