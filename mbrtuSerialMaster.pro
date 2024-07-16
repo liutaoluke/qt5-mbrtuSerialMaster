@@ -11,6 +11,8 @@ CONFIG += c++17
 
 SOURCES += \
     ess.cpp \
+    loghandler.cpp \
+    logwriter.cpp \
     main.cpp \
     mainwindow.cpp \
     mainwindowcom1.cpp \
@@ -25,6 +27,8 @@ SOURCES += \
 
 HEADERS += \
     ess.h \
+    loghandler.h \
+    logwriter.h \
     mainwindow.h \
     mainwindowcom1.h \
     mainwindowcom2.h \

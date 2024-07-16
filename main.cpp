@@ -8,8 +8,22 @@
 #include "serialcommu.h"
 #include "serialrequest.h"
 
+#include "loghandler.h"
+
+LogHandler *globalLogHandler = nullptr;
+// 自定义消息处理函数
+void customMessageHandler(QtMsgType type, const QMessageLogContext &context, const QString &msg) {
+    if (globalLogHandler) {
+        globalLogHandler->handleLogMessage(type, context, msg);
+    }
+}
+
 int main(int argc, char *argv[]) {
     QApplication a(argc, argv);
+
+    // 注册自定义消息处理函数
+    globalLogHandler = new LogHandler();
+    qInstallMessageHandler(customMessageHandler);
 
     OS os[3];
     ESS ess(os);
@@ -44,5 +58,9 @@ int main(int argc, char *argv[]) {
         }
     });
 
-    return a.exec();
+    int result = a.exec();
+
+    delete globalLogHandler;
+
+    return result;
 }
