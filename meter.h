@@ -1,5 +1,5 @@
 #pragma once
-#include "def.h"
+#include "os.h"
 
 #include <QDebug>
 #include <QModbusDataUnit>
@@ -10,7 +10,7 @@ class Meter : public QObject {
     Q_OBJECT
 public:
     explicit Meter(int device_address = -1, QObject *parent = nullptr);
-    ~Meter() { qDebug() << "destructor : ~Meter()"; }
+    virtual ~Meter();
 
 signals:
 

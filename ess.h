@@ -1,40 +1,53 @@
 #pragma once
-#include "def.h"
-
-#include <QObject>
-
-#include "meter.h"
-#include "modbushandler.h"
 #include "os.h"
+
+#include <QList>
+#include <QObject>
+#include "airc.h"
+#include "ems.h"
+#include "meter.h"
+#include "ostimer.h"
+
+#define CONTAINER_QLIST
 
 class ESS : public QObject {
     Q_OBJECT
 public:
-    explicit ESS(OS *p_os, QObject *parent = nullptr);
+    explicit ESS(QObject *parent = nullptr);
+    virtual ~ESS();
 
-    void controlOSQTimerInterval(OS *p_os);
+    void ssControlOSQTimerInterval_MBHandler(OS *p_os, OSTimer *p_ostimer);
+    void ssControlOSQTimerInterval_SerialCommu(OS *p_os, OSTimer *p_ostimer);
 
 public slots:
-    void do_osQTimerInterval_Start(OS *p_os);
-    void do_osQTimerInterval_Stop(OS *p_os);
-    void do_mbHandlerCom2_01sec();
-    void do_mbHandlerCom2_05sec();
-    void do_mbHandlerCom2_30sec();
-    void do_mbHandlerCom2_02min();
-    void do_mbHandlerCom2_10min();
 
+    void do_initESSInSubThread();
+
+private slots:
+
+    void do_startOSQTimerIntvl(OSTimer *p_ostimer);
+    void do_stopOSQTimerIntvl(OSTimer *p_ostimer);
+    void do_emsMBHandlerCom2_01sec();
+    void do_emsMBHandlerCom2_05sec();
+    void do_emsMBHandlerCom2_30sec();
+    void do_emsMBHandlerCom2_02min();
+    void do_emsMBHandlerCom2_10min();
+
+    void do_emsSerialCommuCom3_01sec();
 signals:
 
-private:
-    ModbusHandler *mp_mbHandlerCom1 = nullptr;
-    ModbusHandler *mp_mbHandlerCom2 = nullptr;
-    ModbusHandler *mp_mbHandlerCom3 = nullptr;
+public:
+#ifndef CONTAINER_QLIST
+    OSTimer *mp_ostimer = nullptr;
+#else
+    QList<OSTimer *> mlist_p_ostimer;
+#endif
 
-    OS *mp_osCom1 = nullptr;
-    OS *mp_osCom2 = nullptr;
-    OS *mp_osCom3 = nullptr;
+    EMS *mp_ems = nullptr;
 
     Meter *mp_meterGrid = nullptr;
     Meter *mp_meterLoad = nullptr;
     Meter *mp_meterESS = nullptr;
+
+    AirC *mp_ariC = nullptr;
 };

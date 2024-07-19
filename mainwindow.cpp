@@ -2,15 +2,35 @@
 #include "ui_mainwindow.h"
 
 #include <QCoreApplication>
+#include <QThread>
+#include <QTimer>
 
-MainWindow::MainWindow(OS *p_os, QWidget *parent)
+MainWindow::MainWindow(QWidget *parent)
     : QMainWindow(parent)
-    , mp_os(p_os)
     , ui(new Ui::MainWindow) {
     ui->setupUi(this);
 
     connect(ui->pushButtonQuit, &QPushButton::clicked, [=]() {
-        QCoreApplication::quit();
+        // Set background color to black
+        this->setStyleSheet("background-color: black;");
+
+        // Switch to full screen mode
+        this->showFullScreen();
+
+        // Update the window to apply the style and mode changes
+        this->update();
+
+        // // Process any pending events to ensure the UI updates before hiding
+        // QCoreApplication::processEvents();
+
+        // Use QTimer to delay the quit operation, allowing the UI to update
+        QTimer::singleShot(5000, this, [=]() {
+            // Hide the window
+            this->hide();
+
+            // Quit the application
+            QCoreApplication::quit();
+        });
     });
 
     // mp_mainWindowCom1 = new MainWindowCom1;
@@ -62,11 +82,13 @@ MainWindow::MainWindow(OS *p_os, QWidget *parent)
 }
 
 MainWindow::~MainWindow() {
+    qCritical() << "destructor - MainWindow::~MainWindow()!!!";
+    qDebug() << "destructor - MainWindow::~MainWindow - ThreadId: " << QThread::currentThreadId();
     delete ui;
 }
 
 void MainWindow::do_openMainWindowCom1() {
-    qDebug() << "!!!!!!MainWindow::do_openMainWindowCom1()!!!!!!";
+    qInfo() << "!!!!!!MainWindow::do_openMainWindowCom1()!!!!!!";
     mp_mainWindowCom1 = new MainWindowCom1(this);
     this->hide();
     mp_mainWindowCom1->show();
@@ -79,16 +101,16 @@ void MainWindow::do_openMainWindowCom1() {
 }
 
 void MainWindow::do_closeMainWindowCom1() {
-    qDebug() << "!!!!!!start:MainWindow::do_closeMainWindowCom1()!!!!!!";
+    qInfo() << "!!!!!!start:MainWindow::do_closeMainWindowCom1()!!!!!!";
     mp_mainWindowCom1->hide();
     mp_mainWindowCom1->deleteLater();
     this->show();
-    qDebug() << "!!!!!!end:MainWindow::do_closeMainWindowCom1()!!!!!!";
+    qInfo() << "!!!!!!end:MainWindow::do_closeMainWindowCom1()!!!!!!";
 }
 
 void MainWindow::do_openMainWindowCom2() {
-    qDebug() << "!!!!!!MainWindow::do_openMainWindowCom2()!!!!!!";
-    mp_mainWindowCom2 = new MainWindowCom2(&(mp_os + 1)->m_interval.timer_01sec, (mp_os + 1));
+    qInfo() << "!!!!!!MainWindow::do_openMainWindowCom2()!!!!!!";
+    mp_mainWindowCom2 = new MainWindowCom2(this);
     this->hide();
     mp_mainWindowCom2->show();
 
@@ -100,16 +122,16 @@ void MainWindow::do_openMainWindowCom2() {
 }
 
 void MainWindow::do_closeMainWindowCom2() {
-    qDebug() << "!!!!!!start:MainWindow::do_closeMainWindowCom2()!!!!!!";
+    qInfo() << "!!!!!!start:MainWindow::do_closeMainWindowCom2()!!!!!!";
     mp_mainWindowCom2->hide();
     mp_mainWindowCom2->deleteLater();
     this->show();
-    qDebug() << "!!!!!!end:MainWindow::do_closeMainWindowCom2()!!!!!!";
+    qInfo() << "!!!!!!end:MainWindow::do_closeMainWindowCom2()!!!!!!";
 }
 
 void MainWindow::do_openMainWindowCom3() {
-    qDebug() << "!!!!!!MainWindow::do_openMainWindowCom3()!!!!!!";
-    mp_mainWindowCom3 = new MainWindowCom3(&(mp_os + 2)->m_interval.timer_01sec, (mp_os + 2));
+    qInfo() << "!!!!!!MainWindow::do_openMainWindowCom3()!!!!!!";
+    mp_mainWindowCom3 = new MainWindowCom3(this);
     this->hide();
     mp_mainWindowCom3->show();
 
@@ -121,9 +143,9 @@ void MainWindow::do_openMainWindowCom3() {
 }
 
 void MainWindow::do_closeMainWindowCom3() {
-    qDebug() << "!!!!!!start:MainWindow::do_closeMainWindowCom3()!!!!!!";
+    qInfo() << "!!!!!!start:MainWindow::do_closeMainWindowCom3()!!!!!!";
     mp_mainWindowCom3->hide();
     mp_mainWindowCom3->deleteLater();
     this->show();
-    qDebug() << "!!!!!!end:MainWindow::do_closeMainWindowCom3()!!!!!!";
+    qInfo() << "!!!!!!end:MainWindow::do_closeMainWindowCom3()!!!!!!";
 }

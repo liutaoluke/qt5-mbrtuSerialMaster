@@ -10,6 +10,8 @@ CONFIG += c++17
 #DEFINES += QT_DISABLE_DEPRECATED_BEFORE=0x060000    # disables all the APIs deprecated before Qt 6.0.0
 
 SOURCES += \
+    airc.cpp \
+    ems.cpp \
     ess.cpp \
     loghandler.cpp \
     logwriter.cpp \
@@ -22,11 +24,14 @@ SOURCES += \
     modbushandler.cpp \
     modbusrequest.cpp \
     os.cpp \
+    ostimer.cpp \
     serialcommu.cpp \
     serialrequest.cpp
 
 HEADERS += \
+    airc.h \
     def.h \
+    ems.h \
     ess.h \
     loghandler.h \
     logwriter.h \
@@ -38,6 +43,7 @@ HEADERS += \
     modbushandler.h \
     modbusrequest.h \
     os.h \
+    ostimer.h \
     serialcommu.h \
     serialrequest.h
 

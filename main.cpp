@@ -4,12 +4,12 @@
 
 #include <QDebug>
 #include "ess.h"
-#include "os.h"
+#include "loghandler.h"
+
 #include "serialcommu.h"
 #include "serialrequest.h"
 
-#include "loghandler.h"
-
+//globle definition
 LogHandler *globalLogHandler = nullptr;
 // 自定义消息处理函数
 void customMessageHandler(QtMsgType type, const QMessageLogContext &context, const QString &msg) {
@@ -18,52 +18,57 @@ void customMessageHandler(QtMsgType type, const QMessageLogContext &context, con
     }
 }
 
+/***
+    os[0]
+    os[1] - com1
+    os[2] - com2
+    os[3] - com3
+    os[4] - com4
+    ***/
+OS os[5]; //globle variable
+
 int main(int argc, char *argv[]) {
     QApplication a(argc, argv);
 
+    qDebug() << "main() - ThreadId: " << QThread::currentThreadId();
     // 注册自定义消息处理函数
     globalLogHandler = new LogHandler();
     qInstallMessageHandler(customMessageHandler);
 
-    OS os[3];
-    ESS ess(os);
+    // ESS ess;
+    // QThread threadESS;
+    // ess.moveToThread(&threadESS);
+    // QObject::connect(&threadESS, &QThread::started, &ess, &ESS::do_initESSInSubThread);
+    // threadESS.start();
 
-    MainWindow w(os);
+    ESS *p_ess = new ESS;
+    QThread *p_threadESS = new QThread;
+    p_ess->moveToThread(p_threadESS);
+    QObject::connect(p_threadESS, &QThread::started, p_ess, &ESS::do_initESSInSubThread);
+    QObject::connect(p_threadESS, &QThread::finished, p_ess, &ESS::deleteLater);
+    p_threadESS->start();
+
+    MainWindow w;
     w.show();
-
-    SerialCommu serialCommuCom3;
-
-    SerialRequest serialRequestData01("hello luke");
-    SerialRequest serialRequestData02("hello world");
-    SerialRequest serialRequestData03("hello jiajia");
-
-    bool isEnable_request_queue = true;
-
-    QTimer timer;
-    timer.start(1e3);
-    QObject::connect(&timer, &QTimer::timeout, [&]() {
-        auto request_queue_size = serialCommuCom3.m_requestQueue.size();
-
-        qDebug() << "requestQueue.size() : " << request_queue_size;
-
-        if ((request_queue_size < 100) && (isEnable_request_queue)) {
-            serialCommuCom3.sendRequest(serialRequestData01);
-            serialCommuCom3.sendRequest(serialRequestData02);
-            serialCommuCom3.sendRequest(serialRequestData03);
-        }
-        else if (request_queue_size >= 100) {
-            isEnable_request_queue = false;
-        }
-        else if (request_queue_size < 10) {
-            isEnable_request_queue = true;
-        }
-    });
 
     // When application quits, stop the thread
     QObject::connect(&a, &QCoreApplication::aboutToQuit, [&]() {
-        globalLogHandler->deleteLater();
+        if (p_threadESS->isRunning()) {
+            p_threadESS->quit();
+            p_threadESS->wait();
+        }
+        // delete p_ess;
+        p_ess->deleteLater();
+        // delete p_threadESS;
+        p_threadESS->deleteLater();
+
         // delete globalLogHandler;
+        globalLogHandler->deleteLater();
     });
 
-    return a.exec();
+    int execResult = a.exec();
+
+    qInfo() << "Application execution finished!!!";
+
+    return execResult;
 }

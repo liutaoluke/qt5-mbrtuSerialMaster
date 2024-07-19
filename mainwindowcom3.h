@@ -14,7 +14,7 @@ class MainWindowCom3 : public QMainWindow {
     Q_OBJECT
 
 public:
-    MainWindowCom3(QTimer *p_timer, OS *p_os, QWidget *parent = nullptr);
+    MainWindowCom3(QWidget *parent = nullptr);
     ~MainWindowCom3();
 
 signals:

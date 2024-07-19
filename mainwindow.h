@@ -1,12 +1,11 @@
 #pragma once
-#include "def.h"
+#include "os.h"
 
 #include <QMainWindow>
 
 #include "mainwindowcom1.h"
 #include "mainwindowcom2.h"
 #include "mainwindowcom3.h"
-#include "os.h"
 
 namespace Ui {
 class MainWindow;
@@ -16,7 +15,7 @@ class MainWindow : public QMainWindow {
     Q_OBJECT
 
 public:
-    explicit MainWindow(OS *p_os, QWidget *parent = nullptr);
+    explicit MainWindow(QWidget *parent = nullptr);
     ~MainWindow();
 
 public slots:
@@ -31,7 +30,6 @@ private:
     Ui::MainWindow *ui;
 
 private:
-    OS *mp_os = nullptr;
     MainWindowCom1 *mp_mainWindowCom1 = nullptr;
     MainWindowCom2 *mp_mainWindowCom2 = nullptr;
     MainWindowCom3 *mp_mainWindowCom3 = nullptr;

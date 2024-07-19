@@ -3,30 +3,54 @@
 #include <QDebug>
 
 LogHandler::LogHandler() {
-    logWriter = new LogWriter("application.log");
-    // logThread = new QThread();
-    // logWriter->moveToThread(logThread);
-    // connect(logThread, &QThread::started, logWriter, &LogWriter::do_startFlushTimer);
-    // connect(logThread, &QThread::finished, logWriter, &LogWriter::do_stopFlushTimer);
-    // connect(logThread, &QThread::finished, logWriter, &QObject::deleteLater);
-    connect(this, &LogHandler::sg_logMessage, logWriter, &LogWriter::writeLog);
-    connect(this, &LogHandler::sg_flushLogs, logWriter, &LogWriter::flushLogs);
-    // logThread->start();
+    qDebug() << "constructor - LogHandler::LogHandler() - ThreadId: " << QThread::currentThreadId();
+
+    mp_logWriter = new LogWriter("application.log");
+    mp_logThread = new QThread(this);
+    mp_logWriter->moveToThread(mp_logThread);
+    qDebug() << "LogWriter - ThreadId before thread start: "
+             << mp_logWriter->thread()->currentThreadId();
+#if 1
+    bool connect_status = connect(mp_logThread,
+                                  &QThread::started,
+                                  mp_logWriter,
+                                  &LogWriter::do_initFlushTimer);
+    qDebug() << "mp_logThread & mp_logWriter - connect_status : " << connect_status;
+#else
+    mp_logWriter->do_initFlushTimer();
+#endif
+    connect(mp_logThread, &QThread::finished, mp_logWriter, &QObject::deleteLater);
+    connect(this, &LogHandler::sg_logMessage, mp_logWriter, &LogWriter::writeLog);
+    connect(this, &LogHandler::sg_flushLogs, mp_logWriter, &LogWriter::flushLogs);
+    mp_logThread->start();
+    bool isRunning_status = mp_logThread->isRunning();
+    qDebug() << "mp_logThread - isRunning_status : " << isRunning_status;
+    qDebug() << "LogWriter - ThreadId after thread start: "
+             << mp_logWriter->thread()->currentThreadId();
 }
 
 LogHandler::~LogHandler() {
     qCritical() << "destructor - LogHandler::~LogHandler()!!!";
+    qDebug() << "destructor - LogHandler::~LogHandler() - ThreadId: " << QThread::currentThreadId();
 
-    // logWriter->do_stopFlushTimer();
-    // logThread->quit(); // 请求线程退出事件循环
-    // logThread->wait(); // 等待线程完成所有任务并退出
-    // delete logThread;  // 删除线程对象
-    // logWriter->deleteLater();
-    delete logWriter;
+    deleteLogThread();
+    globalLogHandler = nullptr;
+    qInstallMessageHandler(nullptr);
 }
 
-void LogHandler::handleLogMessage(QtMsgType type, const QMessageLogContext &context, const QString &msg) {
-    qDebug() << "LogHandler::handleLogMessage - ThreadId: " << QThread::currentThreadId();
+void LogHandler::deleteLogThread() {
+    if (mp_logThread->isRunning()) {
+        mp_logThread->quit(); // 请求线程退出事件循环
+        mp_logThread->wait(); // 等待线程完成所有任务并退出
+    }
+    mp_logWriter->deleteLater();
+    mp_logThread->deleteLater(); // 删除线程对象
+}
+
+void LogHandler::handleLogMessage(QtMsgType type,
+                                  const QMessageLogContext &context,
+                                  const QString &msg) {
+    // qDebug() << "LogHandler::handleLogMessage - ThreadId: " << QThread::currentThreadId();
     QString logMessage;
     switch (type) {
     case QtDebugMsg:
@@ -41,12 +65,12 @@ void LogHandler::handleLogMessage(QtMsgType type, const QMessageLogContext &cont
         break;
     case QtWarningMsg:
         logMessage = QString("Warning: %1").arg(msg);
-        // qWarning().noquote() << logMessage;
-        // return;
+        qWarning().noquote() << logMessage;
+        return;
         break;
     case QtCriticalMsg:
         logMessage = QString("Critical: %1").arg(msg);
-        // qCritical().noquote() << logMessage;
+        qCritical().noquote() << logMessage;
         // return;
         break;
     case QtFatalMsg:
@@ -58,8 +82,9 @@ void LogHandler::handleLogMessage(QtMsgType type, const QMessageLogContext &cont
         return;
     }
 
-    logMessage = QDateTime::currentDateTime().toString("yyyy-MM-dd hh:mm:ss.zzz ") + QString(context.file)
-                 + ":" + QString::number(context.line) + ", " + context.function + " - " + logMessage;
+    logMessage = QDateTime::currentDateTime().toString("yyyy-MM-dd hh:mm:ss.zzz ")
+                 + QString(context.file) + ":" + QString::number(context.line) + ", "
+                 + context.function + " - " + logMessage;
 
     emit sg_logMessage(logMessage);
 }

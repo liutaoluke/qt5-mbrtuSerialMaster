@@ -1,7 +1,9 @@
 #pragma once
 #include "def.h"
 
+#include <QDebug>
 #include <QModbusDataUnit>
+#include <QThread>
 #include <QVector>
 
 enum ModbusRequestType_enDT { MODBUS_REQUEST_READ, MODBUS_REQUEST_WRITE, MODBUS_REQUEST_RW };
@@ -17,17 +19,24 @@ struct ModbusRequest {
     //     : m_serverAddress(-1)
     //     , m_mbDataUnitRequest()
     //     , mp_mbDataUnitReply(nullptr) {}
-    ModbusRequest() = default;
+    explicit ModbusRequest() = default;
 
     // Parameterized constructor
-    ModbusRequest(ModbusRequestType_enDT mbRequestType,
-                  int serverAddress,
-                  const QModbusDataUnit &dataUnitRequest,
-                  QModbusDataUnit *p_dataUnitReply = nullptr)
+    explicit ModbusRequest(ModbusRequestType_enDT mbRequestType,
+                           int serverAddress,
+                           const QModbusDataUnit &dataUnitRequest,
+                           QModbusDataUnit *p_dataUnitReply = nullptr)
         : m_mbRequestType(mbRequestType)
         , m_serverAddress(serverAddress)
         , m_mbDataUnitRequest(dataUnitRequest)
         , mp_mbDataUnitReply(p_dataUnitReply) {}
+
+    virtual ~ModbusRequest() {
+        // qCritical() << "destructor - ModbusRequest::~ModbusRequest()!!!";
+        // qDebug() << "destructor - ModbusRequest::~ModbusRequest - ThreadId: "
+        //          << QThread::currentThreadId();
+    }
+
 #if 0
     // Copy constructor
     ModbusRequest(const ModbusRequest &other)
