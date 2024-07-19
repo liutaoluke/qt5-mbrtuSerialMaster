@@ -1,5 +1,5 @@
 #pragma once
-#include "def.h"
+#include "os.h"
 
 #include <QObject>
 #include <QThread>
@@ -12,6 +12,8 @@ public:
     LogHandler();
     ~LogHandler();
 
+    void deleteLogThread();
+
     void handleLogMessage(QtMsgType type, const QMessageLogContext &context, const QString &msg);
 
 signals:
@@ -19,6 +21,9 @@ signals:
     void sg_flushLogs();
 
 private:
-    LogWriter *logWriter;
-    QThread *logThread;
+    LogWriter *mp_logWriter;
+    QThread *mp_logThread;
 };
+
+//declaration
+extern LogHandler *globalLogHandler;

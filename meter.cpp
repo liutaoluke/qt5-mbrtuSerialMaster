@@ -25,3 +25,8 @@ Meter::Meter(int device_address, QObject *parent)
                              m_deviceAddress,
                              m_mbDataUnitRequestGetParaTOUA,
                              &m_mbDataUnitReplyGetParaTouA) {}
+
+Meter::~Meter() {
+    qCritical() << "destructor - Meter::~Meter()!!!";
+    qDebug() << "destructor - Meter::~Meter - ThreadId: " << QThread::currentThreadId();
+}

@@ -14,7 +14,7 @@ class MainWindowCom2 : public QMainWindow {
     Q_OBJECT
 
 public:
-    MainWindowCom2(QTimer *p_timer, OS *p_os, QWidget *parent = nullptr);
+    MainWindowCom2(QWidget *parent = nullptr);
     ~MainWindowCom2();
 
 signals:

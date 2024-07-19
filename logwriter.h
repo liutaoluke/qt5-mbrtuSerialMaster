@@ -15,8 +15,8 @@ public:
     ~LogWriter();
 
 public slots:
-    void do_startFlushTimer();
-    void do_stopFlushTimer();
+    void do_initFlushTimer();
+
     void writeLog(const QString &message);
     void flushLogs();
 
@@ -24,5 +24,5 @@ private:
     QFile logFile;
     QMutex mutex;
     QQueue<QString> logQueue;
-    QTimer flushTimer;
+    QTimer *mp_flushTimer;
 };
