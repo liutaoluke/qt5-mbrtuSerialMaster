@@ -1,58 +1,76 @@
 #pragma once
+#include "def.h"
 
+#include <QDebug>
 #include <QModbusDataUnit>
+#include <QThread>
 #include <QVector>
 
+enum ModbusRequestType_enDT { MODBUS_REQUEST_READ, MODBUS_REQUEST_WRITE, MODBUS_REQUEST_RW };
+
 struct ModbusRequest {
-    QModbusDataUnit dataUnit;
-    int serverAddress;
-    QVector<quint16> *mp_mbDataUnitValues; // Pointer to store the result values
+    ModbusRequestType_enDT m_mbRequestType;
+    int m_serverAddress;
+    QModbusDataUnit m_mbDataUnitRequest;
+    QModbusDataUnit *mp_mbDataUnitReply; // Pointer to store the result
 
     // Default constructor
     // ModbusRequest()
-    //     : dataUnit()
-    //     , serverAddress(-1)
-    //     , mp_mbDataUnitValues(nullptr) {}
-    ModbusRequest() = default;
+    //     : m_serverAddress(-1)
+    //     , m_mbDataUnitRequest()
+    //     , mp_mbDataUnitReply(nullptr) {}
+    explicit ModbusRequest() = default;
 
     // Parameterized constructor
-    ModbusRequest(const QModbusDataUnit &dataUnit, int serverAddress, QVector<quint16> *valuesPtr = nullptr)
-        : dataUnit(dataUnit)
-        , serverAddress(serverAddress)
-        , mp_mbDataUnitValues(valuesPtr) {}
+    explicit ModbusRequest(ModbusRequestType_enDT mbRequestType,
+                           int serverAddress,
+                           const QModbusDataUnit &dataUnitRequest,
+                           QModbusDataUnit *p_dataUnitReply = nullptr)
+        : m_mbRequestType(mbRequestType)
+        , m_serverAddress(serverAddress)
+        , m_mbDataUnitRequest(dataUnitRequest)
+        , mp_mbDataUnitReply(p_dataUnitReply) {}
 
+    virtual ~ModbusRequest() {
+        // qCritical() << "destructor - ModbusRequest::~ModbusRequest()!!!";
+        // qDebug() << "destructor - ModbusRequest::~ModbusRequest - ThreadId: "
+        //          << QThread::currentThreadId();
+    }
+
+#if 0
     // Copy constructor
     ModbusRequest(const ModbusRequest &other)
-        : dataUnit(other.dataUnit)
-        , serverAddress(other.serverAddress)
-        , mp_mbDataUnitValues(other.mp_mbDataUnitValues) {}
+        : m_serverAddress(other.m_serverAddress)
+        , m_mbDataUnitRequest(other.m_mbDataUnitRequest)
+        , mp_mbDataUnitReply(other.mp_mbDataUnitReply) {}
 
     // Assignment operator
     ModbusRequest &operator=(const ModbusRequest &other) {
         if (this != &other) {
-            dataUnit = other.dataUnit;
-            serverAddress = other.serverAddress;
-            mp_mbDataUnitValues = other.mp_mbDataUnitValues;
+            m_serverAddress = other.m_serverAddress;
+            m_mbDataUnitRequest = other.m_mbDataUnitRequest;
+            mp_mbDataUnitReply = other.mp_mbDataUnitReply;
         }
         return *this;
     }
 
     // Move constructor
     ModbusRequest(ModbusRequest &&other) noexcept
-        : dataUnit(std::move(other.dataUnit))
-        , serverAddress(other.serverAddress)
-        , mp_mbDataUnitValues(other.mp_mbDataUnitValues) {
-        other.mp_mbDataUnitValues = nullptr;
+        : m_serverAddress(other.m_serverAddress)
+        , m_mbDataUnitRequest(std::move(other.m_mbDataUnitRequest))
+        , mp_mbDataUnitReply(other.mp_mbDataUnitReply) {
+        other.mp_mbDataUnitReply = nullptr;
     }
 
     // Move assignment operator
     ModbusRequest &operator=(ModbusRequest &&other) noexcept {
         if (this != &other) {
-            dataUnit = std::move(other.dataUnit);
-            serverAddress = other.serverAddress;
-            mp_mbDataUnitValues = other.mp_mbDataUnitValues;
-            other.mp_mbDataUnitValues = nullptr;
+            m_serverAddress = other.m_serverAddress;
+            m_mbDataUnitRequest = std::move(other.m_mbDataUnitRequest);
+            mp_mbDataUnitReply = other.mp_mbDataUnitReply;
+            other.mp_mbDataUnitReply = nullptr;
         }
         return *this;
     }
+#endif
 };
