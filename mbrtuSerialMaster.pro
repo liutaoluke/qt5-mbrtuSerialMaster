@@ -20,6 +20,7 @@ SOURCES += \
     mainwindowcom1.cpp \
     mainwindowcom2.cpp \
     mainwindowcom3.cpp \
+    mainwindowdisplay.cpp \
     meter.cpp \
     modbushandler.cpp \
     modbusrequest.cpp \
@@ -39,6 +40,7 @@ HEADERS += \
     mainwindowcom1.h \
     mainwindowcom2.h \
     mainwindowcom3.h \
+    mainwindowdisplay.h \
     meter.h \
     modbushandler.h \
     modbusrequest.h \
@@ -51,7 +53,8 @@ FORMS += \
     mainwindow.ui \
     mainwindowcom1.ui \
     mainwindowcom2.ui \
-    mainwindowcom3.ui
+    mainwindowcom3.ui \
+    mainwindowdisplay.ui
 
 # Default rules for deployment.
 # qnx: target.path = /tmp/$${TARGET}/bin

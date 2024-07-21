@@ -55,7 +55,7 @@ MainWindowCom3::MainWindowCom3(QWidget *parent)
     // });
 
     QTimer *p_timer_ui = new QTimer(this);
-    p_timer_ui->setInterval(500);
+    p_timer_ui->setInterval(UI_TIMER_INTVL_UPDATE);
     p_timer_ui->start();
 
     OS *p_os = &os[3];

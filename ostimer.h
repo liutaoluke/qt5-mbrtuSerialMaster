@@ -1,18 +1,8 @@
 #pragma once
+#include "os.h"
 
 #include <QObject>
 #include <QTimer>
-
-//QTimerINTVL
-enum OS_Timer_Intvl_enDT {
-    OS_TIMER_INTVL_UPDATE = 1000,
-
-    OS_TIMER_INTVL_01SEC = 500,
-    OS_TIMER_INTVL_05SEC = 1000,
-    OS_TIMER_INTVL_30SEC = 30000,
-    OS_TIMER_INTVL_02MIN = 120000,
-    OS_TIMER_INTVL_10MIN = 600000,
-};
 
 class OSTimer : public QObject {
     Q_OBJECT
