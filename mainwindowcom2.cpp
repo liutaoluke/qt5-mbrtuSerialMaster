@@ -56,7 +56,7 @@ MainWindowCom2::MainWindowCom2(QWidget *parent)
     // });
 
     QTimer *p_timer_ui = new QTimer(this);
-    p_timer_ui->setInterval(500);
+    p_timer_ui->setInterval(UI_TIMER_INTVL_UPDATE);
     p_timer_ui->start();
 
     OS *p_os = &os[2];
@@ -103,7 +103,7 @@ MainWindowCom2::MainWindowCom2(QWidget *parent)
         ui->labelStatMBHandlercntonStateChanged_UnconnectedState->setText(
             QString::number(p_os->m_stat.modbusHanderCnt.cnt_onStateChanged_UnconnectedState));
 
-        auto percent_finished = p_os->m_stat.modbusHanderCnt.percent_Finished * 100;
+        auto percent_finished = p_os->m_stat.modbusHanderCnt.percent_Finished;
         ui->labelStatMBHandlerpercentFinished->setNum(static_cast<int>(percent_finished));
         ui->labelStatMBHandlercntunFinished->setText(
             QString::number(p_os->m_stat.modbusHanderCnt.cnt_unFinished));

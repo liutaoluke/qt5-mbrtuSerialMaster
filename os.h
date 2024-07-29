@@ -27,7 +27,8 @@ struct OS_Statistics_ModbusHanderCnt_stDT {
 
     void calc_percent_Finished() {
         if (cnt_sendRequest != 0) {
-            percent_Finished = static_cast<double>(cnt_processNextRequest_Finished) / cnt_sendRequest;
+            percent_Finished = static_cast<double>(cnt_processNextRequest_Finished) * 100
+                               / cnt_sendRequest;
         }
     }
 };

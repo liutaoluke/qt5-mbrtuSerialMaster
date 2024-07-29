@@ -5,7 +5,7 @@
 LogHandler::LogHandler() {
     qDebug() << "constructor - LogHandler::LogHandler() - ThreadId: " << QThread::currentThreadId();
 
-    mp_logWriter = new LogWriter("application.log");
+    mp_logWriter = new LogWriter("/root/application.log");
     mp_logThread = new QThread(this);
     mp_logWriter->moveToThread(mp_logThread);
     qDebug() << "LogWriter - ThreadId before thread start: "
@@ -66,7 +66,7 @@ void LogHandler::handleLogMessage(QtMsgType type,
     case QtWarningMsg:
         logMessage = QString("Warning: %1").arg(msg);
         qWarning().noquote() << logMessage;
-        return;
+        // return;
         break;
     case QtCriticalMsg:
         logMessage = QString("Critical: %1").arg(msg);
@@ -85,6 +85,6 @@ void LogHandler::handleLogMessage(QtMsgType type,
     logMessage = QDateTime::currentDateTime().toString("yyyy-MM-dd hh:mm:ss.zzz ")
                  + QString(context.file) + ":" + QString::number(context.line) + ", "
                  + context.function + " - " + logMessage;
-
+    // qDebug() << "LogHandler::handleLogMessage - logMessage : " << logMessage;
     emit sg_logMessage(logMessage);
 }
