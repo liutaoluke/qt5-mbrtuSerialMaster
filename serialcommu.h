@@ -35,7 +35,7 @@ public:
     }
 
     void sendRequest(const SerialRequest &request) {
-        qDebug() << "SerialCommu::sendRequest - ThreadId: " << QThread::currentThreadId();
+        // qDebug() << "SerialCommu::sendRequest - ThreadId: " << QThread::currentThreadId();
         m_requestQueue.enqueue(request);
         if (!m_requestInProgress) {
             processNextRequest(); // 处理队列中的请求
@@ -46,9 +46,9 @@ signals:
 
 private slots:
     void do_handleBytesWritten(quint64 bytes) {
-        qDebug() << "SerialCommu::do_handleBytesWritten - ThreadId: " << QThread::currentThreadId();
+        // qDebug() << "SerialCommu::do_handleBytesWritten - ThreadId: " << QThread::currentThreadId();
         if (bytes == static_cast<quint64>(m_currentRequest.m_dataRequest.size())) {
-            qDebug() << "Data sent successfully!";
+            qInfo() << "Data sent successfully!";
 
             // 可以进行接收数据的准备或其他操作
 
@@ -56,7 +56,7 @@ private slots:
             m_timerFrameInterval.start(m_frameIntervalTimeOut);
         }
         else {
-            qDebug() << "SerialCommu - Data sent failed!";
+            qWarning() << "SerialCommu - Data sent failed!";
 
             //本次请求发送失败，直接执行下一次请求；
             m_requestInProgress = false;
@@ -64,7 +64,7 @@ private slots:
         }
     }
     void do_handleReadyRead() {
-        qDebug() << "SerialCommu::do_handleReadyRead - ThreadId: " << QThread::currentThreadId();
+        // qDebug() << "SerialCommu::do_handleReadyRead - ThreadId: " << QThread::currentThreadId();
 
         if (m_currentRequest.mp_dataReply) {
             //只要接收到一个字节，则关闭数据帧接收超时判断
@@ -77,7 +77,7 @@ private slots:
             m_timerByteInterval.start(m_byteIntervalTimeOut);
 
             QByteArray replyData = mp_serialPort->readAll();
-            qDebug() << "SerialCommu - Received data *byte* from serial port:" << replyData;
+            // qDebug() << "SerialCommu - Received data *byte* from serial port:" << replyData;
             // 在这里处理接收到的数据，根据需求进行解析和处理
 
             // m_currentRequest.mp_dataReply->append(replyData);
@@ -88,8 +88,8 @@ private slots:
         }
     }
     void do_handleTimerByteIntervalTimeOut() {
-        qDebug() << "SerialCommu::do_handleTimerByteIntervalTimeOut - ThreadId: "
-                 << QThread::currentThreadId();
+        // qDebug() << "SerialCommu::do_handleTimerByteIntervalTimeOut - ThreadId: "
+        //          << QThread::currentThreadId();
 
         if (m_currentRequest.mp_dataReply) {
             //字节间隔定时超时，则判断为数据帧接收完毕，可以进行数据帧的相关的处理
@@ -97,8 +97,8 @@ private slots:
 
             if (!m_currentRequest_dataReplyTemp.isEmpty()) {
                 *m_currentRequest.mp_dataReply = m_currentRequest_dataReplyTemp;
-                qDebug() << "SerialCommu - Received data *Frame* from serial port:"
-                         << *m_currentRequest.mp_dataReply;
+                // qDebug() << "SerialCommu - Received data *Frame* from serial port:"
+                //          << *m_currentRequest.mp_dataReply;
                 m_currentRequest_dataReplyTemp.clear();
             }
             else {
@@ -142,7 +142,7 @@ private:
 
             QByteArray requestData = m_currentRequest.m_dataRequest;
             mp_serialPort->write(requestData);
-            qDebug() << "SerialCommu - Sending serial communication data:" << requestData;
+            // qDebug() << "SerialCommu - Sending serial communication data:" << requestData;
         }
     }
 

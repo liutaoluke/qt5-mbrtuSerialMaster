@@ -26,6 +26,7 @@ SOURCES += \
     modbusrequest.cpp \
     os.cpp \
     ostimer.cpp \
+    powerbus.cpp \
     serialcommu.cpp \
     serialrequest.cpp
 
@@ -46,6 +47,7 @@ HEADERS += \
     modbusrequest.h \
     os.h \
     ostimer.h \
+    powerbus.h \
     serialcommu.h \
     serialrequest.h
 
