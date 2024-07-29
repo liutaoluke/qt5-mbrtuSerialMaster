@@ -98,8 +98,8 @@ void ESS::do_initESSInSubThread() {
 }
 
 void ESS::ssControlOSQTimerInterval_MBHandler(OS *p_os, OSTimer *p_ostimer) {
-    qDebug() << "ESS::ssControlOSQTimerInterval_MBHandler - ThreadId: "
-             << QThread::currentThreadId();
+    // qDebug() << "ESS::ssControlOSQTimerInterval_MBHandler - ThreadId: "
+    //          << QThread::currentThreadId();
     QTimer *p_timer = new QTimer(this);
     p_timer->start(OS_TIMER_INTVL_UPDATE);
     connect(p_timer, &QTimer::timeout, this, [=]() {
@@ -113,7 +113,7 @@ void ESS::ssControlOSQTimerInterval_MBHandler(OS *p_os, OSTimer *p_ostimer) {
 }
 
 void ESS::ssControlOSQTimerInterval_SerialCommu(OS *p_os, OSTimer *p_ostimer) {
-    qDebug() << "ESS::ssControlOSQTimerInterval_SerialCommu - ThreadId: " << QThread::currentThreadId();
+    // qDebug() << "ESS::ssControlOSQTimerInterval_SerialCommu - ThreadId: " << QThread::currentThreadId();
     QTimer *p_timer = new QTimer(this);
     p_timer->start(OS_TIMER_INTVL_UPDATE);
     auto request_queue_size = mp_ems->mp_serialCommuCom3->m_requestQueue.size();
@@ -128,7 +128,7 @@ void ESS::ssControlOSQTimerInterval_SerialCommu(OS *p_os, OSTimer *p_ostimer) {
 }
 
 void ESS::do_startOSQTimerIntvl(OSTimer *p_ostimer) {
-    qDebug() << "ESS::do_startOSQTimerIntvl - ThreadId: " << QThread::currentThreadId();
+    // qDebug() << "ESS::do_startOSQTimerIntvl - ThreadId: " << QThread::currentThreadId();
     if (!p_ostimer->m_intvl_01sec.isActive())
         p_ostimer->m_intvl_01sec.start(OS_TIMER_INTVL_01SEC);
     if (!p_ostimer->m_intvl_05sec.isActive())
@@ -142,7 +142,7 @@ void ESS::do_startOSQTimerIntvl(OSTimer *p_ostimer) {
 }
 
 void ESS::do_stopOSQTimerIntvl(OSTimer *p_ostimer) {
-    qDebug() << "ESS::do_startOSQTimerIntvl - ThreadId: " << QThread::currentThreadId();
+    // qDebug() << "ESS::do_startOSQTimerIntvl - ThreadId: " << QThread::currentThreadId();
     p_ostimer->m_intvl_01sec.stop();
     p_ostimer->m_intvl_05sec.stop();
     // p_ostimer->m_intvl_30sec.stop();
@@ -151,7 +151,7 @@ void ESS::do_stopOSQTimerIntvl(OSTimer *p_ostimer) {
 }
 
 void ESS::do_emsMBHandlerCom2_01sec() {
-    qDebug() << "ESS::do_emsMBHandlerCom2_01sec - ThreadId: " << QThread::currentThreadId();
+    // qDebug() << "ESS::do_emsMBHandlerCom2_01sec - ThreadId: " << QThread::currentThreadId();
     ++os[2].m_stat.qtimerCnt.cnt_01sec;
     mp_ems->mp_mbHandlerCom2->sendRequest(mp_meterGrid->m_mbRequestGetDataVAW);
     mp_ems->mp_mbHandlerCom2->sendRequest(mp_meterLoad->m_mbRequestGetDataVAW);
@@ -162,7 +162,7 @@ void ESS::do_emsMBHandlerCom2_01sec() {
 }
 
 void ESS::do_emsMBHandlerCom2_05sec() {
-    qDebug() << "ESS::do_emsMBHandlerCom2_05sec - ThreadId: " << QThread::currentThreadId();
+    // qDebug() << "ESS::do_emsMBHandlerCom2_05sec - ThreadId: " << QThread::currentThreadId();
     ++os[2].m_stat.qtimerCnt.cnt_05sec;
     mp_ems->mp_mbHandlerCom2->sendRequest(mp_meterGrid->m_mbRequestGetDataEnergy);
     mp_ems->mp_mbHandlerCom2->sendRequest(mp_meterLoad->m_mbRequestGetDataEnergy);
@@ -178,7 +178,7 @@ void ESS::do_emsMBHandlerCom2_05sec() {
 void ESS::do_emsMBHandlerCom2_30sec() {}
 
 void ESS::do_emsMBHandlerCom2_02min() {
-    qDebug() << "ESS::do_emsMBHandlerCom2_02min - ThreadId: " << QThread::currentThreadId();
+    // qDebug() << "ESS::do_emsMBHandlerCom2_02min - ThreadId: " << QThread::currentThreadId();
     ++os[2].m_stat.qtimerCnt.cnt_02min;
     mp_ems->mp_mbHandlerCom2->sendRequest(mp_meterGrid->m_mbRequestGetParaSys);
     mp_ems->mp_mbHandlerCom2->sendRequest(mp_meterLoad->m_mbRequestGetParaSys);
@@ -189,7 +189,7 @@ void ESS::do_emsMBHandlerCom2_02min() {
 }
 
 void ESS::do_emsMBHandlerCom2_10min() {
-    qDebug() << "ESS::do_emsMBHandlerCom2_10min - ThreadId: " << QThread::currentThreadId();
+    // qDebug() << "ESS::do_emsMBHandlerCom2_10min - ThreadId: " << QThread::currentThreadId();
     ++os[2].m_stat.qtimerCnt.cnt_10min;
     mp_ems->mp_mbHandlerCom2->sendRequest(mp_meterGrid->m_mbRequestGetParaTOUA);
     mp_ems->mp_mbHandlerCom2->sendRequest(mp_meterLoad->m_mbRequestGetParaTOUA);
@@ -200,7 +200,7 @@ void ESS::do_emsMBHandlerCom2_10min() {
 }
 
 void ESS::do_emsSerialCommuCom3_01sec() {
-    qDebug() << "ESS::do_emsSerialCommuCom3_01sec - ThreadId: " << QThread::currentThreadId();
+    // qDebug() << "ESS::do_emsSerialCommuCom3_01sec - ThreadId: " << QThread::currentThreadId();
     ++os[3].m_stat.qtimerCnt.cnt_01sec;
     mp_ems->mp_serialCommuCom3->sendRequest(mp_ariC->m_serialRequestData01);
     mp_ems->mp_serialCommuCom3->sendRequest(mp_ariC->m_serialRequestData02);

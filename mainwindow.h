@@ -6,6 +6,7 @@
 #include "mainwindowcom1.h"
 #include "mainwindowcom2.h"
 #include "mainwindowcom3.h"
+#include "mainwindowdisplay.h"
 
 namespace Ui {
 class MainWindow;
@@ -25,6 +26,8 @@ public slots:
     void do_closeMainWindowCom2();
     void do_openMainWindowCom3();
     void do_closeMainWindowCom3();
+    void do_openMainWindowDisplay();
+    void do_closeMainWindowDisplay();
 
 private:
     Ui::MainWindow *ui;
@@ -33,4 +36,5 @@ private:
     MainWindowCom1 *mp_mainWindowCom1 = nullptr;
     MainWindowCom2 *mp_mainWindowCom2 = nullptr;
     MainWindowCom3 *mp_mainWindowCom3 = nullptr;
+    MainWindowDisplay *mp_mainWindowDisplay = nullptr;
 };

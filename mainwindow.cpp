@@ -79,6 +79,11 @@ MainWindow::MainWindow(QWidget *parent)
     //     // mp_mainWindowCom3->deleteLater();
     //     this->show();
     // });
+
+    connect(ui->pushButtonDisplay,
+            &QPushButton::clicked,
+            this,
+            &MainWindow::do_openMainWindowDisplay);
 }
 
 MainWindow::~MainWindow() {
@@ -148,4 +153,25 @@ void MainWindow::do_closeMainWindowCom3() {
     mp_mainWindowCom3->deleteLater();
     this->show();
     qInfo() << "!!!!!!end:MainWindow::do_closeMainWindowCom3()!!!!!!";
+}
+
+void MainWindow::do_openMainWindowDisplay() {
+    qInfo() << "!!!!!!MainWindow::do_openMainWindowDisplay()!!!!!!";
+    mp_mainWindowDisplay = new MainWindowDisplay(this);
+    this->hide();
+    mp_mainWindowDisplay->show();
+
+    auto connected_status = connect(mp_mainWindowDisplay,
+                                    &MainWindowDisplay::sg_backToMainWindow,
+                                    this,
+                                    &MainWindow::do_closeMainWindowDisplay);
+    qDebug() << "do_openMainWindowDisplay - Connection status:" << connected_status;
+}
+
+void MainWindow::do_closeMainWindowDisplay() {
+    qInfo() << "!!!!!!start:MainWindow::do_closeMainWindowDisplay()!!!!!!";
+    mp_mainWindowDisplay->hide();
+    mp_mainWindowDisplay->deleteLater();
+    this->show();
+    qInfo() << "!!!!!!end:MainWindow::do_closeMainWindowDisplay()!!!!!!";
 }

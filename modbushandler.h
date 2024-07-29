@@ -48,7 +48,7 @@ private slots:
         if (state == QModbusDevice::ConnectedState) {
             ++mp_os->m_stat.modbusHanderCnt.cnt_onStateChanged_ConnectedState;
 
-            qDebug() << "Modbus device connected";
+            qInfo() << "Modbus device connected";
         }
         else if (state == QModbusDevice::UnconnectedState) {
             ++mp_os->m_stat.modbusHanderCnt.cnt_onStateChanged_UnconnectedState;
@@ -60,7 +60,7 @@ private slots:
     void onErrorOccurred(QModbusDevice::Error error) {
         ++mp_os->m_stat.modbusHanderCnt.cnt_onErrorOccurred;
 
-        qWarning() << "Modbus error occurred:" << error;
+        qCritical() << "Modbus error occurred:" << error;
         requestInProgress = false; // Reset the flag in case of error
         emit nextRequest();        // Try to process the next request
     }
@@ -85,7 +85,7 @@ private slots:
         else {
             ++mp_os->m_stat.modbusHanderCnt.cnt_processNextRequest_Error;
 
-            qWarning() << "Modbus error occurred:" << reply->error();
+            qCritical() << "Modbus error occurred:" << reply->error();
         }
 
         reply->deleteLater();
